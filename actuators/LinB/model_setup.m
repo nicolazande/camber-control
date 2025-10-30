@@ -15,7 +15,7 @@ mspc = 4; %min number of sample per cycle (>= 2 for Shannon)
 Jlm = 0;
 Jgb = 1.4e-6; %gearbox inertial motor side [Kg*m2]
 Klt = 1/(1000*2*pi*174.72*6/(48*91)); %gearhead to load ratio [m/rad]
-grtot = 1000*2*pi*174.72/48; %total gear ratio
+grtot = 1000*2*pi*174.72/48;r %total gear ratio
 
 %% plant (motor)
 L = 0.512e-3; %inductance [H]
@@ -28,7 +28,7 @@ no = 4670*2*pi/60; %no load speed [rad/s]
 Uin = 48; %input voltage [V]
 Io = 0.248; %no load current [A]
 wo = 4670*2*pi/60; %no load speed [rad/s]
-Umax = 36; %nominal voltage [V]
+Umax = 48; %36; %nominal voltage [V]
 Imax = 22; %max current [A]
 In = 4.27; %nominal current [A]
 tauGp = 0.778e-3; %mechanical time constant [s] 
