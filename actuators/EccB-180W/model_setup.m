@@ -7,7 +7,7 @@ s = tf('s');
 
 %% user parameters
 desired_bandwidth = 20; %desired position closed loop bandwidth [Hz]
-current_scaling = 45;%50; %current loop needs to be faster
+current_scaling = 30; %45;%50; %current loop needs to be faster
 position_scaling = 1; %scaling factor
 mspc = 4; %min number of sample per cycle (>= 2 for Shannon)
 
@@ -85,6 +85,22 @@ wc = 2*pi*min(position_scaling*desired_bandwidth, 1/(mspc*Tsp)); %desired closed
 Kip_si = 55; %50; %integral gain [A/(rad*s)]
 Kpp_si = 3.7; %2.9; %proportional gain [A/rad]
 Kdp_si = 0.075; %0.075; %derivative gain [A*s/rad] (0.11*Kup*Tup)
+
+% === Parametri target ===
+w_c = 2*pi*desired_bandwidth; % [rad/s]
+wD = 4*w_c;  % cutoff frequency of second pole (NOTE: reduce scaling to limit high frequency vibrations)
+Ti = 8/w_c;
+
+C0jw = 1 + 1/(1i*w_c*Ti);
+Gjw  = squeeze(freqresp(Gp, w_c));
+Kp0  = 1 / abs(C0jw * Gjw); 
+Ki0  = Kp0 / Ti;
+Kd0 = 10*Kp0/wD;
+scaling = 70;
+Kpp_si = Kp0*scaling; %2.5; %1.95; %proportional gain [A/rad]
+Kip_si = Ki0*scaling; %52; %72.5; %integral gain [A/(rad*s)]
+Kdp_si = Kd0*scaling; %10*Kpp_si/wD;
+
 Rp = Kpp_si + Kip_si/s + s*Kdp_si/(Kdp_si/(10*Kpp_si)*s + 1); %position: R(s) [rad --> A]
 Lp = Rp*Gp; %position L(s): [rad --> rad]
 Fp = minreal(Lp/(1+Lp)); %position F(s): [rad --> rad]
